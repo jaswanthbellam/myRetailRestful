@@ -6,6 +6,17 @@ public class Product {
 	private String name;
 	private Price currentPrice;
 
+	public Product() {
+
+	}
+
+	public Product(long id, String name, Price currentPrice) {
+		this.id = id;
+		this.name = name;
+		this.currentPrice = currentPrice;
+
+	}
+
 	public Price getCurrentPrice() {
 		return currentPrice;
 	}

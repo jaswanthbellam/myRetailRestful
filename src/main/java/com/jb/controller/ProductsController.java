@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jb.model.Product;
-import com.jb.service.ProductService;
+import com.jb.service.ProductServiceImpl;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/myRetailRestful/api")
 public class ProductsController {
 
 	@Autowired
-	ProductService productService;
+	ProductServiceImpl productService;
 
 	@RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProduct(@PathVariable("id") long id) {
 
-		Product product = productService.getproductbyId(id);
+		Product product = productService.getProductById(id);
 		return new ResponseEntity<Product>(product, HttpStatus.OK);
 
 	}

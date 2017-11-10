@@ -1,9 +1,11 @@
-package com.jb.action;
+package com.jb.controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan("com.jb")
 public class myRetailRestfulApp {
 
 	public static void main(String[] args) {
