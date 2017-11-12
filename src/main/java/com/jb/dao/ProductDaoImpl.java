@@ -6,8 +6,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
@@ -47,9 +57,25 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public double getProductPrice(long Id) {
+	public String getProductPrice(long id) {
 
-		return 0;
+		String database = System.getenv("database");
+		ServerAddress serverAddress = new ServerAddress(System.getenv("server"),
+				Integer.valueOf(System.getenv("port")));
+		MongoCredential redskyAuth = MongoCredential.createCredential(System.getenv("user"), database,
+				System.getenv("pwd").toCharArray());
+		List<MongoCredential> auths = new ArrayList<>();
+		auths.add(redskyAuth);
+		MongoClient mongoClient = new MongoClient(serverAddress, auths);
+
+		DB db = mongoClient.getDB(database);
+		DBCollection col = db.getCollection("products");
+
+		BasicDBObject query = new BasicDBObject();
+		query.put("id", id);
+		DBObject dbObj = col.findOne(query);
+		BasicDBObject productObj = (BasicDBObject) dbObj.get("current_price");
+		return productObj.toJson();
 	}
 
 }

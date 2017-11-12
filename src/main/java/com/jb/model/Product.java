@@ -1,9 +1,12 @@
 package com.jb.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Product {
 
 	private long id;
 	private String name;
+	@JsonProperty("current_price")
 	private Price currentPrice;
 
 	public Product() {

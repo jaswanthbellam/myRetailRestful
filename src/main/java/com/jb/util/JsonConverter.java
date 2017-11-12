@@ -1,4 +1,4 @@
-package com.jb.Util;
+package com.jb.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
