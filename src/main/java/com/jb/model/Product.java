@@ -8,6 +8,7 @@ public class Product {
 	private String name;
 	@JsonProperty("current_price")
 	private Price currentPrice;
+	private int status;
 
 	public Product() {
 
@@ -18,6 +19,14 @@ public class Product {
 		this.name = name;
 		this.currentPrice = currentPrice;
 
+	}
+	
+	public Product(int status) {
+		this.status = status;
+	}
+
+	public int getStatus() {
+		return status;
 	}
 
 	public Price getCurrentPrice() {

@@ -23,10 +23,18 @@ public class ProductsController {
 
 	@RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProduct(@PathVariable("id") long id) {
-		
+
 		Product product = productService.getProductById(id);
-		logger.debug("Got the product data : "+ product.toString());
-		return new ResponseEntity<Product>(product, HttpStatus.OK);
+		if (product != null) {
+			if (product.getStatus() == 404) {
+				return new ResponseEntity<String>("id not found", HttpStatus.NOT_FOUND);
+			} else {
+				logger.debug("Got the product data : " + product.toString());
+				return new ResponseEntity<Product>(product, HttpStatus.OK);
+			}
+		} else {
+			return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 	}
 

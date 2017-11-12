@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.jb.exception.NotFoundException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -23,24 +24,26 @@ import com.mongodb.ServerAddress;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Override
-	public String getProductName(long id) {
+	public String getProductName(long id) throws NotFoundException {
 
 		HttpURLConnection conn = null;
-		String api = System.getenv("redSkyApi") + "/" + id;
-		URL url;
+
 		try {
-			url = new URL(api);
+			String api = System.getenv("redSkyApi") + "/" + id;
+			URL url = new URL(api);
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 
-			int responseCode = conn.getResponseCode();
 			logger.debug("\nSending 'GET' request to URL : " + url);
+			int responseCode = conn.getResponseCode();
 			logger.debug("Response Code : " + responseCode);
-
+			if (responseCode == 404) {
+				throw new NotFoundException("404 Not found");
+			}
 			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
@@ -49,22 +52,21 @@ public class ProductDaoImpl implements ProductDao {
 				response.append(inputLine);
 			}
 			in.close();
-			logger.debug("Resonse from api: "+response.toString());
+			logger.debug("Response from api: " + response.toString());
 			return response.toString();
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("failed!", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("failed!", e);
 		}
 		return null;
 
 	}
 
 	@Override
-	public String getProductPrice(long id) {
+	public String getProductPrice(long id) throws NotFoundException {
 
 		MongoClient mongoClient = null;
-		try {
 		String database = System.getenv("database");
 		ServerAddress serverAddress = new ServerAddress(System.getenv("server"),
 				Integer.valueOf(System.getenv("port")));
@@ -78,18 +80,18 @@ public class ProductDaoImpl implements ProductDao {
 		DBCollection col = db.getCollection("products");
 
 		BasicDBObject query = new BasicDBObject();
-		query.put("id", id);
+		query.put("id", 123);
 		logger.debug("Sending query to MongoDB database");
 		DBObject dbObj = col.findOne(query);
-		BasicDBObject productObj = (BasicDBObject) dbObj.get("current_price");
-		logger.debug("Got the price of object: "+ productObj.toString());
-		return productObj.toJson();
-		} catch(Exception e) {
-			
-		} finally {
+		if (dbObj == null) {
 			mongoClient.close();
+			throw new NotFoundException("Not found");
 		}
-		return null;
+		BasicDBObject productObj = (BasicDBObject) dbObj.get("current_price");
+		logger.debug("Got the price of object: " + productObj.toString());
+		mongoClient.close();
+		return productObj.toJson();
+
 	}
 
 }

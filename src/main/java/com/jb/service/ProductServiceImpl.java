@@ -1,13 +1,14 @@
 package com.jb.service;
 
-import java.io.IOException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jb.dao.ProductDaoImpl;
+import com.jb.exception.NotFoundException;
 import com.jb.model.Price;
 import com.jb.model.Product;
 import com.jb.util.JsonConverter;
@@ -19,7 +20,8 @@ public class ProductServiceImpl implements ProductService {
 	private ProductDaoImpl productDao;
 	@Autowired
 	private ObjectMapper objectMapper;
-
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Override
 	public Product getProductById(long id) {
 
@@ -36,8 +38,11 @@ public class ProductServiceImpl implements ProductService {
 			
 			Product product = new Product(id, name, priceObj);
 			return product;
-		} catch (IOException e) {
-			e.printStackTrace();
+		}catch (NotFoundException e) {
+			return new Product(404);
+		}
+		catch (Exception e) {
+			logger.error( "failed!", e );
 		}
 		return null;
 
