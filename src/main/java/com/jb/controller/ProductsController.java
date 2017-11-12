@@ -1,5 +1,7 @@
 package com.jb.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,13 @@ public class ProductsController {
 
 	@Autowired
 	ProductServiceImpl productService;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProduct(@PathVariable("id") long id) {
-
+		
 		Product product = productService.getProductById(id);
+		logger.debug("Got the product data : "+ product.toString());
 		return new ResponseEntity<Product>(product, HttpStatus.OK);
 
 	}

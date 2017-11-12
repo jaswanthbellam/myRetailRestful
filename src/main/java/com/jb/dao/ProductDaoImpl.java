@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.mongodb.BasicDBObject;
@@ -21,7 +23,9 @@ import com.mongodb.ServerAddress;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
-
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Override
 	public String getProductName(long id) {
 
@@ -34,8 +38,8 @@ public class ProductDaoImpl implements ProductDao {
 			conn.setRequestMethod("GET");
 
 			int responseCode = conn.getResponseCode();
-			System.out.println("\nSending 'GET' request to URL : " + url);
-			System.out.println("Response Code : " + responseCode);
+			logger.debug("\nSending 'GET' request to URL : " + url);
+			logger.debug("Response Code : " + responseCode);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String inputLine;
@@ -45,7 +49,7 @@ public class ProductDaoImpl implements ProductDao {
 				response.append(inputLine);
 			}
 			in.close();
-			System.out.println(response.toString());
+			logger.debug("Resonse from api: "+response.toString());
 			return response.toString();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -59,6 +63,8 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public String getProductPrice(long id) {
 
+		MongoClient mongoClient = null;
+		try {
 		String database = System.getenv("database");
 		ServerAddress serverAddress = new ServerAddress(System.getenv("server"),
 				Integer.valueOf(System.getenv("port")));
@@ -66,16 +72,24 @@ public class ProductDaoImpl implements ProductDao {
 				System.getenv("pwd").toCharArray());
 		List<MongoCredential> auths = new ArrayList<>();
 		auths.add(redskyAuth);
-		MongoClient mongoClient = new MongoClient(serverAddress, auths);
+		mongoClient = new MongoClient(serverAddress, auths);
 
 		DB db = mongoClient.getDB(database);
 		DBCollection col = db.getCollection("products");
 
 		BasicDBObject query = new BasicDBObject();
 		query.put("id", id);
+		logger.debug("Sending query to MongoDB database");
 		DBObject dbObj = col.findOne(query);
 		BasicDBObject productObj = (BasicDBObject) dbObj.get("current_price");
+		logger.debug("Got the price of object: "+ productObj.toString());
 		return productObj.toJson();
+		} catch(Exception e) {
+			
+		} finally {
+			mongoClient.close();
+		}
+		return null;
 	}
 
 }

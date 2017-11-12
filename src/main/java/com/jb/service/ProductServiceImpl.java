@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
 			String response = productDao.getProductName(id);
 			String name = JsonConverter.convertToJsonObject(response).get("product").getAsJsonObject().get("item")
 					.getAsJsonObject().get("product_description").getAsJsonObject().get("title").getAsString();
-
+			
 			// Get price from mongodb
 			String currentPrice = productDao.getProductPrice(id);
 			objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);

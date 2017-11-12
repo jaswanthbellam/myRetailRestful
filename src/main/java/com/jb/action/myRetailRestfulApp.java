@@ -1,4 +1,4 @@
-package com.jb.controller;
+package com.jb.action;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class myRetailRestfulApp {
 
 	public static void main(String[] args) {
-
+		
 		SpringApplication.run(myRetailRestfulApp.class, args);
 
 	}
