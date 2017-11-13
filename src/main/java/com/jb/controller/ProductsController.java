@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +37,22 @@ public class ProductsController {
 			return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+	}
+	
+	@RequestMapping(value = "/product/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateProduct(@PathVariable("id") long id, @RequestBody Product product) {
+		
+		Product response = productService.updateProduct(id, product);
+		if (response != null) {
+			if (product.getStatus() == 404) {
+				return new ResponseEntity<String>("id not found", HttpStatus.NOT_FOUND);
+			} else {
+				return new ResponseEntity<String>("Data updated", HttpStatus.OK);
+			}
+		} else {
+			return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 
 }

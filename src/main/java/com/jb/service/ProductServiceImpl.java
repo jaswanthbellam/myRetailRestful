@@ -47,5 +47,18 @@ public class ProductServiceImpl implements ProductService {
 		return null;
 
 	}
+	
+	public Product updateProduct(long id, Product product) {
+		
+		try {
+			int response = productDao.updateProductPrice(id,product.getCurrentPrice());
+			if(response == 200)
+				return product;
+		} catch (NotFoundException e) {
+			product.setStatus(404);
+			return product;
+		}
+		return null;
+	}
 
 }

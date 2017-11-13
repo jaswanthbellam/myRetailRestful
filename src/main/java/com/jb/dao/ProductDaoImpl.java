@@ -11,9 +11,13 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jb.exception.NotFoundException;
+import com.jb.model.Price;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -21,11 +25,15 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.WriteResult;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private MongoClient mongoClient = null;
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public String getProductName(long id) throws NotFoundException {
@@ -66,7 +74,49 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public String getProductPrice(long id) throws NotFoundException {
 
-		MongoClient mongoClient = null;
+		DBCollection col = getMongoDBCollection();
+		BasicDBObject query = new BasicDBObject();
+		query.put("id", id);
+		logger.debug("Sending query to MongoDB database");
+		DBObject dbObj = col.findOne(query);
+		if (dbObj == null) {
+			mongoClient.close();
+			throw new NotFoundException("Not found");
+		}
+		BasicDBObject productObj = (BasicDBObject) dbObj.get("current_price");
+		logger.debug("Got the price of object: " + productObj.toString());
+		close();
+		return productObj.toJson();
+
+	}
+
+	public int updateProductPrice(long id, Price price) throws NotFoundException {
+
+		try {
+			DBCollection col = getMongoDBCollection();
+			BasicDBObject query = new BasicDBObject();
+			query.put("id", id);
+
+			String priceInJson = objectMapper.writeValueAsString(price);
+
+			BasicDBObject updateQuery = new BasicDBObject();
+			updateQuery.append("$set", new BasicDBObject().append("current_price.value", price.getValue()));
+
+			logger.debug("Sending query to MongoDB database");
+			WriteResult result = col.update(query, updateQuery);
+			if (!result.wasAcknowledged()) {
+				close();
+				throw new NotFoundException("Not found");
+			}
+			close();
+			return 200;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public DBCollection getMongoDBCollection() {
 		String database = System.getenv("database");
 		ServerAddress serverAddress = new ServerAddress(System.getenv("server"),
 				Integer.valueOf(System.getenv("port")));
@@ -78,20 +128,11 @@ public class ProductDaoImpl implements ProductDao {
 
 		DB db = mongoClient.getDB(database);
 		DBCollection col = db.getCollection("products");
+		return col;
+	}
 
-		BasicDBObject query = new BasicDBObject();
-		query.put("id", 123);
-		logger.debug("Sending query to MongoDB database");
-		DBObject dbObj = col.findOne(query);
-		if (dbObj == null) {
-			mongoClient.close();
-			throw new NotFoundException("Not found");
-		}
-		BasicDBObject productObj = (BasicDBObject) dbObj.get("current_price");
-		logger.debug("Got the price of object: " + productObj.toString());
+	public void close() {
 		mongoClient.close();
-		return productObj.toJson();
-
 	}
 
 }
