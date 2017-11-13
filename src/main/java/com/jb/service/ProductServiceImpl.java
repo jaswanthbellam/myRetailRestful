@@ -22,7 +22,6 @@ public class ProductServiceImpl implements ProductService {
 	private ObjectMapper objectMapper;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Override
 	public Product getProductById(long id) {
 
 		try {

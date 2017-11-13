@@ -19,7 +19,7 @@ import com.jb.service.ProductServiceImpl;
 public class ProductsController {
 
 	@Autowired
-	ProductServiceImpl productService;
+	public ProductServiceImpl productService;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/product/{id}", method = RequestMethod.GET)

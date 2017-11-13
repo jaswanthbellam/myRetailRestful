@@ -23,6 +23,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -35,15 +41,89 @@
 			<artifactId>mongo-java-driver</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+			<version>1.0-groovy-2.4</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- Enables mocking of classes (in addition to interfaces) -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>3.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency> <!-- enables mocking of classes without default constructor (together with 
+				CGLIB) -->
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>2.5.1</version>
+			<scope>test</scope>
+		</dependency>
 
 
 	</dependencies>
 
 	<build>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<useFile>false</useFile>
+					<includes>
+						<include>**/*Spec.groovy</include>
+					</includes>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.jb.action.myRetailRestfulAp</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.jb.action.myRetailRestfulApp</mainClass>
+				</configuration>
 			</plugin>
 
 		</plugins>

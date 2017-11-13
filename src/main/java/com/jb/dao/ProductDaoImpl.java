@@ -35,7 +35,6 @@ public class ProductDaoImpl implements ProductDao {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Override
 	public String getProductName(long id) throws NotFoundException {
 
 		HttpURLConnection conn = null;
@@ -71,7 +70,6 @@ public class ProductDaoImpl implements ProductDao {
 
 	}
 
-	@Override
 	public String getProductPrice(long id) throws NotFoundException {
 
 		DBCollection col = getMongoDBCollection();
@@ -122,7 +120,7 @@ public class ProductDaoImpl implements ProductDao {
 				Integer.valueOf(System.getenv("port")));
 		MongoCredential redskyAuth = MongoCredential.createCredential(System.getenv("user"), database,
 				System.getenv("pwd").toCharArray());
-		List<MongoCredential> auths = new ArrayList<>();
+		List<MongoCredential> auths = new ArrayList<MongoCredential>();
 		auths.add(redskyAuth);
 		mongoClient = new MongoClient(serverAddress, auths);
 

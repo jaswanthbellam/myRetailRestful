@@ -7,6 +7,8 @@ public class JsonConverter {
 	
 	public static JsonObject convertToJsonObject(String jsonStr) {
 		
+		if(jsonStr == null)
+			throw new NullPointerException();
 		JsonObject jObj = new Gson().fromJson(jsonStr, JsonObject.class); 
 		return jObj;
 		
