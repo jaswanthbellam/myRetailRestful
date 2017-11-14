@@ -35,6 +35,9 @@ public class ProductDaoImpl implements ProductDao {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	/**
+	 * Method to extract name from API
+	 */
 	public String getProductName(long id) throws NotFoundException {
 
 		HttpURLConnection conn = null;
@@ -70,6 +73,9 @@ public class ProductDaoImpl implements ProductDao {
 
 	}
 
+	/**
+	 * Method to extract price from Mongodb database
+	 */
 	public String getProductPrice(long id) throws NotFoundException {
 
 		DBCollection col = getMongoDBCollection();
@@ -88,6 +94,9 @@ public class ProductDaoImpl implements ProductDao {
 
 	}
 
+	/**
+	 * Method to update product price in mongodb database
+	 */
 	public int updateProductPrice(long id, Price price) throws NotFoundException {
 
 		try {
@@ -114,6 +123,10 @@ public class ProductDaoImpl implements ProductDao {
 		return 0;
 	}
 
+	/**
+	 * 
+	 *Method to get the database collection object
+	 */
 	public DBCollection getMongoDBCollection() {
 		String database = System.getenv("database");
 		ServerAddress serverAddress = new ServerAddress(System.getenv("server"),

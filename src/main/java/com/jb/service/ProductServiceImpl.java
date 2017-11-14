@@ -18,9 +18,10 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductDaoImpl productDao;
-	@Autowired
-	private ObjectMapper objectMapper;
+	
+	private ObjectMapper objectMapper = new ObjectMapper();
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	
 	public Product getProductById(long id) {
 
@@ -30,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
 			String name = JsonConverter.convertToJsonObject(response).get("product").getAsJsonObject().get("item")
 					.getAsJsonObject().get("product_description").getAsJsonObject().get("title").getAsString();
 			
-			// Get price from mongodb
+			// Get price from mongodb database
 			String currentPrice = productDao.getProductPrice(id);
 			objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 			Price priceObj = objectMapper.readValue(currentPrice, Price.class);
@@ -47,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 	
+	//Method to update product price
 	public Product updateProduct(long id, Product product) {
 		
 		try {

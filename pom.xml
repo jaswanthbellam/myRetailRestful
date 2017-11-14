@@ -13,8 +13,7 @@
 	</parent>
 
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<jdk.version>1.8</jdk.version>
 	</properties>
 
 	<dependencies>
@@ -28,6 +27,32 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>4.3.12.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.jayway.restassured/rest-assured -->
+		<dependency>
+			<groupId>com.jayway.restassured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>2.9.0</version>
+			<scope>test</scope>
+		</dependency>
+
+
+
+		<!-- https://mvnrepository.com/artifact/io.rest-assured/spring-mock-mvc -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>spring-mock-mvc</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
@@ -44,16 +69,36 @@
 		<dependency>
 			<groupId>org.spockframework</groupId>
 			<artifactId>spock-core</artifactId>
-			<version>1.0-groovy-2.4</version>
+			<version>1.1-groovy-2.4</version>
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.4.12</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Enables mocking of classes (in addition to interfaces) -->
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>3.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency> <!-- enables mocking of classes (in addition to interfaces) -->
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.6.5</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -76,7 +121,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin> <!-- The gmavenplus plugin is used to compile Groovy code -->
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
@@ -89,8 +134,6 @@
 						</goals>
 					</execution>
 				</executions>
-
-
 			</plugin>
 
 			<plugin>
@@ -98,10 +141,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.2</version>
 				<configuration>
-
 					<archive>
 						<manifest>
-							<mainClass>com.jb.myRetailRestfulApp</mainClass>
+							<mainClass>com.jb.action.myRetailRestfulApp</mainClass>
 						</manifest>
 					</archive>
 					<source>${jdk.version}</source>
@@ -110,25 +152,29 @@
 			</plugin>
 
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Spec.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>java</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-
-					<archive>
-						<manifest>
-							<mainClass>com.jb.myRetailRestfulApp</mainClass>
-						</manifest>
-					</archive>
+					<mainClass>com..jb.action.myRetailRestfulApp</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
