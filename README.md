@@ -1,7 +1,10 @@
-java#Overview
+
+# Overview
+
 The project is an RESTFUL service to retrieve product and price details by ID.
 
-#Configuration
+# Configuration
+
 The following environment variables need to be set: 
 
 	redSkyApi - <url>
@@ -14,16 +17,23 @@ The following environment variables need to be set:
 	database- <databse name>
 
 
-#Running Tests
+# Running Tests
+
 `mvn test`
 
-#To run
+# To run
+
 `mvn spring-boot:run` or `java -jar <project.jar>`
 
-#Consuming the Api
-###Request:
+# Consuming the Api
+
+
+### Request:
+
 GET to http://<server address>/myRetailRestful/api/product/<id>
-###Response:
+	
+### Response:
+
 	200 ok
 	{
 		“id”: 123,
@@ -34,10 +44,16 @@ GET to http://<server address>/myRetailRestful/api/product/<id>
 		}
 	}
 
-###Request:
+### Request:
+
 PUT to http://<server address>/myRetailRestful/api/product/<id>
-###Response:
+	
+### Response:
+
 	200 ok
 	Data Updated
 
+# Environment
+
+Java8, Springboot, Mongodb, Spockframework, Maven, log4j2
 
