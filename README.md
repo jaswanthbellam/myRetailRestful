@@ -30,7 +30,7 @@ The following environment variables need to be set:
 
 ### Request:
 
-GET to http://<server address>/myRetailRestful/api/product/<id>
+GET to http://`server address`/myRetailRestful/api/product/`id`
 	
 ### Response:
 
@@ -46,7 +46,17 @@ GET to http://<server address>/myRetailRestful/api/product/<id>
 
 ### Request:
 
-PUT to http://<server address>/myRetailRestful/api/product/<id>
+PUT to http://`server address`/myRetailRestful/api/product/`id`
+	
+	
+	{
+   		"id": 13860428,
+    		"name": "The Big Lebowski (Blu-ray)",
+    		"current_price": {
+        	"value": 45.49,
+        	"currency_code": "USD"
+   		 }
+	}
 	
 ### Response:
 
